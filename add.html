@@ -3,16 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="navbar.css">
+    <link rel="stylesheet" href="navbar.css" />
     <title>Add a duck</title>
   </head>
   <body>
     <ul class="topnav">
       <li><a class="active" href="index.html">Home</a></li>
-      <li><a href="add.html">Add ducks</a></li>        
+      <li><a href="add.html">Add ducks</a></li>
       <li><a href="search.html">Search ducks</a></li>
       <li><a href="pond.html">Pond</a></li>
-      <li class="right"><a  href="login.html">Login</a></li>
+      <li class="right"><a href="login.html">Login</a></li>
     </ul>
     <div>
       <label>Name:</label>
@@ -23,8 +23,9 @@
       <input type="file" id="imageInput" />
       <button onclick="addTheDuck()">Add the duck</button>
     </div>
+    <script src="configuration.js"></script>
     <script>
-      let host = "http://localhost:8080";
+      let host = configuration.host();
           async function addTheDuck() {
               let message = "";
                 let duckName = document.getElementById("name").value;
@@ -42,7 +43,8 @@
                 let request = {
                   method: "POST",
                   headers: {
-                      "Content-Type": "application/json"
+                      "Content-Type": "application/json",
+                      "Authorization": `Bearer ${configuration.token()}`
                   },
                   body: JSON.stringify(duck)
                 };
@@ -62,12 +64,16 @@
                 console.log(message);
           }
 
-          async function submitTheImage(duckId) {               
-                let imageInput = document.getElementById("imageInput");            
+          async function submitTheImage(duckId) {
+                let imageInput = document.getElementById("imageInput");
                 let formData = new FormData();
                 formData.append("file", imageInput.files[0]);
                 let request = {
                   method: "POST",
+                  headers: {
+                      "Content-Type": "application/json",
+                      "Authorization": `Bearer ${configuration.token()}`
+                  },
                   body: formData
                 };
                 let response = await fetch(host + "/ducks/" + duckId + "/image", request);
